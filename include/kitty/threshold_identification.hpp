@@ -63,12 +63,12 @@ bool is_threshold( const TT& tt, std::vector<int64_t>* plf = nullptr )
 {
   std::vector<int64_t> linear_form;
 
-  /* TODO */
+  /* TODO ... */
   // Get some params
   int32_t num_bits = static_cast<uint32_t>( tt.num_bits() );
   int32_t num_vars = static_cast<uint32_t>( tt.num_vars() );
   auto tt_flip = tt;
-  int flip_table[100];
+  int flip_table[10];
   int i, j, k, v, wk;
   // Print truth table
   std::cout << "Truth table of f is:";
@@ -82,30 +82,16 @@ bool is_threshold( const TT& tt, std::vector<int64_t>* plf = nullptr )
   for ( i = 0u; i < num_vars ; ++i )
   {
     auto fxi     = cofactor1(tt, i);
-    auto fxi_bar = cofactor0(tt, i);
-    /*
-    // Print out cofactor
-    std::cout << "Truth table of fx" << i << "     is: ";
-    for ( int32_t j = static_cast<uint32_t>( fxi.num_bits() ) - 1; j >= 0; j-- )
-    {
-      std::cout << get_bit( fxi, j );
-    }
-    std::cout << endl;
-    std::cout << "Truth table of fx" << i << "_bar is: ";
-    for ( int32_t j = static_cast<uint32_t>( fxi_bar.num_bits() ) - 1; j >= 0; j-- )
-    {
-      std::cout << get_bit( fxi_bar, j );
-    }
-    std::cout << endl;
-    */
+    auto not_fxi = cofactor0(tt, i);
+  
     // Check whether f is positive or negative unate
-    if ( implies( fxi, fxi_bar ) )
+    if ( implies( fxi, not_fxi ) )
     {
       std::cout << "f is negative unate in x" << i << endl;
       tt_flip = flip( tt_flip, i ); // Flip xi so f_flip is positive unate in xi
       flip_table[i] = 1;
     }
-    else if ( implies( fxi_bar, fxi ) )
+    else if ( implies( not_fxi, fxi ) )
     {
       std::cout << "f is positive unate in x" << i << endl;
       flip_table[i] = 0;
@@ -117,6 +103,7 @@ bool is_threshold( const TT& tt, std::vector<int64_t>* plf = nullptr )
     }
   }
   // check tt_flip
+    
   // Print truth table of f_flip
   std::cout << "Truth table of f_flip is:";
   for (  i = num_bits - 1; i >= 0; i-- )
@@ -124,29 +111,10 @@ bool is_threshold( const TT& tt, std::vector<int64_t>* plf = nullptr )
     std::cout << get_bit( tt_flip, i );
   }
   std::cout << endl;
-  /*
-  for ( int32_t i = 0u; i < num_vars; ++i )
-  {
-    auto fxi = cofactor1( tt_flip, i );
-    auto fxi_bar = cofactor0( tt_flip, i );
-    // Check whether f_flip is positive or negative unate
-    if ( implies( fxi, fxi_bar ) )
-    {
-      std::cout << "f_flip is negative unate in x" << i << endl;
-    }
-    else if ( implies( fxi_bar, fxi ) )
-    {
-      std::cout << "f_flip is positive unate in x" << i << endl;
-    }
-    else
-    {
-      std::cout << "f_flip is binate in x" << i << endl;
-    }
-  }
-  */
+
   // Build ILP problem with tt_flip
   lprec* lp;
-  int Ncol, *colno = NULL, ret = 0;
+  int Ncol, *col = NULL, ret = 0;
   REAL* row = NULL;
 
   Ncol = num_vars + 1;
@@ -162,9 +130,9 @@ bool is_threshold( const TT& tt, std::vector<int64_t>* plf = nullptr )
     set_col_name( lp, num_vars + 1, "T" );
 
     // create space large enough for one row 
-    colno = (int*)malloc( Ncol * sizeof( *colno ) );
+    col = (int*)malloc( Ncol * sizeof( *colno ) );
     row = (REAL*)malloc( Ncol * sizeof( *row ) );
-    if ( ( colno == NULL ) || ( row == NULL ) )
+    if ( ( col == NULL ) || ( row == NULL ) )
       ret = 2;
   }
   for ( j = 0; j < num_bits; j++ )
@@ -172,7 +140,7 @@ bool is_threshold( const TT& tt, std::vector<int64_t>* plf = nullptr )
     v = j;
     for ( k = 0; k < num_vars; k++ )
     {
-      colno[k] = k + 1; /* k column */
+      col[k] = k + 1; /* k column */
       
       wk = v % 2;
       v = v >> 1;
@@ -180,12 +148,12 @@ bool is_threshold( const TT& tt, std::vector<int64_t>* plf = nullptr )
       row[k] = wk? 1 : 0;
     }
     //std::cout << endl;
-    colno[num_vars] = num_vars + 1; /* num_vars column */
+    col[num_vars] = num_vars + 1; /* num_vars column */
     row[num_vars] = -1;
     if ( get_bit(tt_flip,j) )
-        add_constraintex( lp, num_vars + 1, row, colno, GE, 0 );
+        add_constraintex( lp, num_vars + 1, row, col, GE, 0 );
     else
-        add_constraintex( lp, num_vars + 1, row, colno, LE, -1 );
+        add_constraintex( lp, num_vars + 1, row, col, LE, -1 );
   }
   // Set the objective function
   if ( ret == 0 )
@@ -194,11 +162,11 @@ bool is_threshold( const TT& tt, std::vector<int64_t>* plf = nullptr )
 
     for ( k = 0; k <= num_vars; k++ )
     {
-      colno[k] = k + 1; /* k column */
+      col[k] = k + 1; /* k column */
       row[k] = 1;
     }
     /* set the objective in lpsolve */
-    if ( !set_obj_fnex( lp, num_vars + 1, row, colno ) )
+    if ( !set_obj_fnex( lp, num_vars + 1, row, col ) )
       ret = 4;
   }
 
@@ -230,8 +198,6 @@ bool is_threshold( const TT& tt, std::vector<int64_t>* plf = nullptr )
 
   if ( ret == 0 )
   {
-    /* a solution is calculated, now lets get some results */
-
     /* objective value */
     printf( "Objective value: %f\n", get_objective( lp ) );
 
@@ -255,20 +221,16 @@ bool is_threshold( const TT& tt, std::vector<int64_t>* plf = nullptr )
       }
     }
     linear_form.push_back( T );
-    /* we are done now */
   }
 
-  /* free allocated memory */
   if ( row != NULL )
     free( row );
-  if ( colno != NULL )
-    free( colno );
+  if ( col != NULL )
+    free( col );
 
-  /* clean up such that all used memory by lpsolve is freed */
+  /* clean up such that all used memory by lpsolve is free */
   if ( lp != NULL )
     delete_lp( lp );
-
-  // std::cout << "ret = " << ret << endl;
 
   /* if tt is non-TF: */
   if (ret != 0 )
