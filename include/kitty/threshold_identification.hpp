@@ -63,7 +63,7 @@ bool is_threshold( const TT& tt, std::vector<int64_t>* plf = nullptr )
 {
   std::vector<int64_t> linear_form;
 
-  /* TODO ... */
+  /* TODO */
   // Get some params
   int32_t num_bits = static_cast<uint32_t>( tt.num_bits() );
   int32_t num_vars = static_cast<uint32_t>( tt.num_vars() );
@@ -130,7 +130,7 @@ bool is_threshold( const TT& tt, std::vector<int64_t>* plf = nullptr )
     set_col_name( lp, num_vars + 1, "T" );
 
     // create space large enough for one row 
-    col = (int*)malloc( Ncol * sizeof( *colno ) );
+    col = (int*)malloc( Ncol * sizeof( *col ) );
     row = (REAL*)malloc( Ncol * sizeof( *row ) );
     if ( ( col == NULL ) || ( row == NULL ) )
       ret = 2;
