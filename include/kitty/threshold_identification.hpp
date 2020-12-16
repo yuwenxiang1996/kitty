@@ -64,7 +64,7 @@ bool is_threshold( const TT& tt, std::vector<int64_t>* plf = nullptr )
   std::vector<int64_t> linear_form;
 
   /* TODO */
-  // Get some params
+  // Get some paramters
   int32_t num_bits = static_cast<uint32_t>( tt.num_bits() );
   int32_t num_vars = static_cast<uint32_t>( tt.num_vars() );
   auto tt_flip = tt;
@@ -84,7 +84,7 @@ bool is_threshold( const TT& tt, std::vector<int64_t>* plf = nullptr )
     auto fxi     = cofactor1(tt, i);
     auto not_fxi = cofactor0(tt, i);
   
-    // Check whether f is positive or negative unate
+    // Judge f is positive or negative unate
     if ( implies( fxi, not_fxi ) )
     {
       std::cout << "f is negative unate in x" << i << endl;
@@ -158,7 +158,7 @@ bool is_threshold( const TT& tt, std::vector<int64_t>* plf = nullptr )
   // Set the objective function
   if ( ret == 0 )
   {
-    set_add_rowmode( lp, FALSE ); /* rowmode should be turned off again when done building the model */
+    set_add_rowmode( lp, FALSE ); /* rowmode should be turned off again when finished building the model */
 
     for ( k = 0; k <= num_vars; k++ )
     {
