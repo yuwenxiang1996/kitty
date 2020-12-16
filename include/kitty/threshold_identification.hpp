@@ -1,4 +1,4 @@
-/* kitty: C++ truth table library
+ /* kitty: C++ truth table library
  * Copyright (C) 2017-2020  EPFL
  *
  * Permission is hereby granted, free of charge, to any person
@@ -68,7 +68,7 @@ bool is_threshold( const TT& tt, std::vector<int64_t>* plf = nullptr )
   int32_t num_bits = static_cast<uint32_t>( tt.num_bits() );
   int32_t num_vars = static_cast<uint32_t>( tt.num_vars() );
   auto tt_flip = tt;
-  int flip_table[10];
+  int flip_table[100];
   int i, j, k, v, wk;
   // Print truth table
   std::cout << "Truth table of f is:";
