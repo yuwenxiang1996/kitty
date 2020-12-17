@@ -38,7 +38,7 @@ bool is_threshold( const TT& tt, std::vector<int64_t>* plf = nullptr )
   int32_t num_bits = static_cast<uint32_t>( tt.num_bits() );
   int32_t num_vars = static_cast<uint32_t>( tt.num_vars() );
   auto tt_flip = tt;
-  int flip_table[50];
+  //int flip_table[40];
   int i, j, k, v, wk;
   // Print truth table
   std::cout << "Truth table of f is:";
