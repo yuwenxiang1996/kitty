@@ -12,23 +12,6 @@ using namespace std;
 
 namespace kitty
 {
-
-/*! \brief Threshold logic function identification
-
-  Given a truth table, this function determines whether it is a threshold logic function (TF)
-  and finds a linear form if it is. A Boolean function is a TF if it can be expressed as
-
-  f(x_1, ..., x_n) = \sum_{i=1}^n w_i x_i >= T
-
-  where w_i are the weight values and T is the threshold value.
-  The linear form of a TF is the vector [w_1, ..., w_n; T].
-
-  \param tt The truth table
-  \param plf Pointer to a vector that will hold a linear form of `tt` if it is a TF.
-             The linear form has `tt.num_vars()` weight values and the threshold value
-             in the end.
-  \return `true` if `tt` is a TF; `false` if `tt` is a non-TF.
-*/
 template<typename TT, typename = std::enable_if_t<is_complete_truth_table<TT>::value>>
 bool is_threshold( const TT& tt, std::vector<int64_t>* plf = nullptr )
 {
