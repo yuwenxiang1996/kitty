@@ -5,11 +5,16 @@
 
 #include <vector>
 #include <string>
+#include <bitset>
+#include <algrithm>
 #include <lpsolve/lp_lib.h> /* uncomment this line to include lp_solve */
 #include "traits.hpp"
+#include "properties.hpp"
+#include "dynamic_truth_table.hpp"
+#include "static_truth_table.hpp"
 
 
-#include <iostream> // need to be deleted
+//#include <iostream> // need to be deleted
 using namespace std;
 
 namespace kitty
