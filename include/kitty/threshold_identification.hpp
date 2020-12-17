@@ -24,13 +24,13 @@ bool is_threshold( const TT& tt, std::vector<int64_t>* plf = nullptr )
   //int flip_table[40];
   int i, j, k, v, wk;
   // Print truth table
-  std::cout << "Truth table of f is:";
+  /*std::cout << "Truth table of f is:";
   for ( int32_t i = num_bits - 1; i >= 0; i-- )
   {
     std::cout << get_bit( tt, i );
   }
   std::cout << endl;
-  
+ */
 // check unateness, create positive unate function
     for (auto i = 0u; i < num_vars; i++)
     {
