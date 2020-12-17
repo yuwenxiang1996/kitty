@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 #include <bitset>
-#include <algrithm>
+#include <algorithm>
 #include <lpsolve/lp_lib.h> /* uncomment this line to include lp_solve */
 #include "traits.hpp"
 #include "properties.hpp"
